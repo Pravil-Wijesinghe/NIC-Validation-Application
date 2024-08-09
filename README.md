@@ -1,4 +1,4 @@
-#Create NIC VAlidaton Application
+#Create NIC Validaton Application
 
 npx create-react-app *
 
