@@ -123,7 +123,7 @@ function OTP({ separator, length, value, onChange }) {
   };
 
   return (
-    <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+    <Box className='flex gap-1 items-center'>
       {new Array(length).fill(null).map((_, index) => (
         <React.Fragment key={index}>
           <BaseInput
@@ -162,14 +162,14 @@ export default function OTPInput() {
   const [otp, setOtp] = React.useState('');
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 2,
-      }}
+    <Box className='flex gap-2 flex-col'
+      // sx={{
+      //   display: 'flex',
+      //   flexDirection: 'column',
+      //   gap: 2,
+      // }}
     >
-      <OTP separator={<span>-</span>} value={otp} onChange={setOtp} length={5} />
+      <OTP separator={<span>-</span>} value={otp} onChange={setOtp} length={4} />
       <span>Entered value: {otp}</span>
     </Box>
   );

@@ -21,9 +21,9 @@ function ResetPassword() {
   return (
     <div className='relative flex items-center justify-center w-full h-screen font-montserrat bg-bg-color'>  
         <div className='absolute items-center justify-center flex flex-col h-fit w-fit bg-primary rounded-xl text-black py-12 px-10'>
-            <h1 className='font-bold text-3xl'>Reset Password</h1>
-            <form className='flex flex-col items-center justify-center gap-3 mt-5'>
-                <FormControl required size='small' sx={{ m: 1, width: '300px' }} variant="outlined">
+            <h1 className='font-bold md:text-3xl text-2xl'>Reset Password</h1>
+            <form className='flex flex-col items-center justify-center gap-4 mt-6'>
+                <FormControl required size='small' className='md:w-72 w-56 rounded-lg' variant="outlined">
                     <InputLabel htmlFor="outlined-adornment-password">Eneter New Password</InputLabel>
                     <OutlinedInput
                         id="outlined-adornment-password"
@@ -43,7 +43,7 @@ function ResetPassword() {
                         label="Eneter New Password"
                     />
                 </FormControl>
-                <FormControl required size='small' sx={{ m: 1, width: '300px' }} variant="outlined">
+                <FormControl required size='small' className='md:w-72 w-56 rounded-lg' variant="outlined">
                     <InputLabel htmlFor="outlined-adornment-password">Re-eneter New Password</InputLabel>
                     <OutlinedInput
                         id="outlined-adornment-password"
@@ -63,7 +63,7 @@ function ResetPassword() {
                         label="Re-eneter New Password"
                     />
                 </FormControl>
-                <Button variant="contained" sx={{width:'200px'}}>Next</Button>
+                <Button variant="contained" className='md:w-52 w-40 mt-2'>Next</Button>
             </form>
         </div>
     </div>

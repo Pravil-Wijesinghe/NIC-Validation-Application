@@ -21,11 +21,11 @@ function Login() {
 
   return (
     <div className='relative flex items-center justify-center w-full h-screen font-montserrat bg-bg-color'>  
-        <div className='absolute items-center justify-center flex flex-col h-fit w-fit bg-primary rounded-xl text-black py-12 px-10'>
-            <h1 className='font-bold text-3xl'>Login</h1>
+        <div className='absolute items-center justify-center flex flex-col h-fit w-fit bg-primary rounded-xl text-black py-12 px-10 mx-5'>
+            <h1 className='font-bold md:text-3xl text-2xl'>Login</h1>
             <form className='flex flex-col items-center justify-center gap-3 mt-5'>
-                <TextField required id="outlined-basic" size='small' label="Username" sx={{'& > :not(style)': { m: 1, width: '300px', borderRadius: '5px' }}}/>
-                <FormControl required size='small' sx={{ m: 1, width: '300px' }} variant="outlined">
+                <TextField required id="outlined-basic" size='small' label="Username" className='md:w-72 w-56 rounded-lg'/>
+                <FormControl required size='small' className='md:w-72 w-56 rounded-lg' variant="outlined">
                     <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
                     <OutlinedInput
                         id="outlined-adornment-password"
@@ -45,8 +45,8 @@ function Login() {
                         label="Password"
                     />
                 </FormControl>
-                <Button variant="contained" sx={{width:'200px'}}>Login</Button>
-                <Button variant="text" sx={{color:'black'}}>Forgot Password?</Button>
+                <Button variant="contained" className='md:w-52 w-40'>Login</Button>
+                <Button variant="text" className='md:w-52 w-40 text-black'>Forgot Password?</Button>
             </form>
         </div>
     </div>

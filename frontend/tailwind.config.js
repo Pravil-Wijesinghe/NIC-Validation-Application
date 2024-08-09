@@ -3,6 +3,7 @@ module.exports = {
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
+  important: "#root",
   theme: {
     colors: {
       'primary': '#EBF5FF',
@@ -17,6 +18,9 @@ module.exports = {
       fontFamily:{
       'montserrat': ['Montserrat'],
     },
+    translate: {
+        '-full-vh': '-100vh',
+      },
     },
   },
   plugins: [],

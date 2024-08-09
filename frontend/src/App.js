@@ -12,6 +12,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path='/' element={<Login/>}/>
         <Route path="/login" element={<Login />} />
         <Route path="/ForgotPasswordEnterEmail" element={<ForgotPasswordEnterEmail />} />
         <Route path="/ForgotPasswordEnterOTP" element={<ForgotPasswordEnterOTP/>}/>
