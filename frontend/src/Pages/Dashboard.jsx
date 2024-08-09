@@ -66,35 +66,35 @@ function Dashboard() {
       <div className='relative flex items-center justify-center w-full h-screen bg-bg-color'>
         <div className='absolute flex flex-col top-20 h-[85%] w-[95%] bg-primary rounded-xl text-black py-6 px-10 overflow-hidden overflow-y-scroll'>
             <div className='flex w-full justify-center'>
-                <h1 className='font-bold text-3xl'>Dashboard</h1>
+                <h1 className='font-bold lg:text-3xl text-2xl'>Dashboard</h1>
             </div>
-            <div className='flex gap-10 w-full justify-center mt-10'>
-                <div className='w-fit h-fit bg-bg-color p-4 text-2xl font-bold rounded-lg flex gap-2 items-center cursor-pointer'>
-                    <TextSnippetIcon fontSize='large'/>
+            <div className='flex md:flex-row flex-col items-center gap-2 lg:gap-10 md:gap-3 w-full justify-center mt-10'>
+                <div className='w-fit h-fit bg-bg-color p-4 lg:text-2xl md:text-xl font-bold rounded-lg flex gap-2 items-center cursor-pointer'>
+                    <TextSnippetIcon className='lg:text-4xl md:text-3xl text-2xl'/>
                     <h1>Total Records -</h1>
                     <h1>100</h1>
                 </div>
-                <div className='w-fit h-fit bg-bg-color p-4 text-2xl font-bold rounded-lg flex gap-2 items-center cursor-pointer'>
-                    <ManIcon fontSize='large'/>
+                <div className='w-fit h-fit bg-bg-color p-4 lg:text-2xl md:text-xl font-bold rounded-lg flex gap-2 items-center cursor-pointer'>
+                    <ManIcon className='lg:text-4xl md:text-3xl text-2xl'/>
                     <h1>Male -</h1>
                     <h1>50</h1>
                 </div>
-                <div className='w-fit h-fit bg-bg-color p-4 text-2xl font-bold rounded-lg flex gap-2 items-center cursor-pointer'>
-                    <WomanIcon fontSize='large'/>
+                <div className='w-fit h-fit bg-bg-color p-4 lg:text-2xl md:text-xl font-bold rounded-lg flex gap-2 items-center cursor-pointer'>
+                    <WomanIcon className='lg:text-4xl md:text-3xl text-2xl'/>
                     <h1>Female -</h1>
                     <h1>50</h1>
                 </div>
             </div>
             <div className='mt-10 w-full flex flex-col justify-center gap-4'>
-                <div className='flex flex-row justify-center items-center gap-3'>
-                    <Box sx={{ minWidth: 200 }}>
+                <div className='flex md:flex-row flex-col gap-2 justify-center items-center lg:gap-3 md:gap-1'>
+                    <Box className='w-52'>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DemoContainer components={['DatePicker']}>
                                 <DatePicker label="Enter Birthday" slotProps={{ textField: { size: 'small' } }}/>
                             </DemoContainer>
                         </LocalizationProvider>
                     </Box>
-                    <Box sx={{ minWidth: 200 }}>
+                    <Box className='w-52'>
                         <FormControl fullWidth>
                             <InputLabel size='small' id="demo-simple-select-label">Age</InputLabel>
                             <Select
@@ -111,7 +111,7 @@ function Dashboard() {
                             </Select>
                         </FormControl>
                     </Box>
-                    <Box sx={{ minWidth: 200 }}>
+                    <Box className='w-52'>
                         <FormControl fullWidth>
                             <InputLabel size='small' id="demo-simple-select-label">Gender</InputLabel>
                             <Select
@@ -127,7 +127,7 @@ function Dashboard() {
                             </Select>
                         </FormControl>
                     </Box>
-                    <Box sx={{ minWidth: 200 }}>
+                    <Box className='w-52'>
                         <FormControl fullWidth>
                             <InputLabel size='small' id="demo-simple-select-label">Select File</InputLabel>
                             <Select
@@ -184,17 +184,15 @@ function Dashboard() {
                     </Table>
                 </TableContainer>
             </div>
-            <div className='flex flex-row mt-10 w-full justify-start'>
+            <div className='flex xl:flex-row flex-col md:gap-6 mt-10 w-full lg:justify-start md:items-center items-center'>
                 <div>
-                    <BarChart
+                    <BarChart className='lg:w-[500px] lg:h-[400px] md:w-[400px] md:h-[300px] w-[300px] h-[200px]'
                         xAxis={[{ scaleType: 'band', data: ['Male', 'Female'] }]}
                         series={[{ data: [4,2] }]}
-                        width={500}
-                        height={400}
                     />
                 </div>
                 <div>
-                    <PieChart
+                    <PieChart className='lg:w-[800px] lg:h-[400px] md:w-[450px] md:h-[300px] w-[230px] h-[200px]'
                         series={[
                             {
                             data: [
@@ -205,8 +203,6 @@ function Dashboard() {
                             ],
                             },
                         ]}
-                        width={800}
-                        height={400}
                     />
                 </div>
             </div>
