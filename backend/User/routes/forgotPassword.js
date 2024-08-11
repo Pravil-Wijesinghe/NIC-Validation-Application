@@ -82,7 +82,7 @@ router.post('/validate-otp', (req, res) => {
     // OTP is valid, clear it from memory
     delete otpStore[email];
 
-    res.status(200).json({ message: 'OTP validated successfully.' });
+    res.status(200).json({ message: 'OTP correctly entered.' });
 });
 
 module.exports = router;
