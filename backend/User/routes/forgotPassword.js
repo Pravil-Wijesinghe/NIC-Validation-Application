@@ -4,6 +4,9 @@ const router = express.Router();
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 
+// In-memory store for OTPs
+const otpStore = {};
+
 // Configure Nodemailer
 const transporter = nodemailer.createTransport({
     service: 'gmail', // You can use any email service
@@ -28,6 +31,12 @@ router.post('/', (req, res) => {
 
     const otp = generateOTP(); // Generate the OTP
 
+    // Store OTP in memory (valid for 5 minutes)
+    otpStore[email] = {
+        otp,
+        expiresAt: Date.now() + 300000, // 5 minutes expiration
+    };
+
     // Send the OTP to the user's email
     const mailOptions = {
         from: 'pravilwijesinghe@gmail.com',
@@ -43,6 +52,37 @@ router.post('/', (req, res) => {
         }
         res.status(200).json({ message: 'OTP sent successfully.'}); // You can return the OTP for debugging but avoid it in production
     });
+});
+
+// Route to validate OTP
+router.post('/validate-otp', (req, res) => {
+
+    console.log('Received request body:', req.body); // Log to see what is received
+
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+        return res.status(400).json({ message: 'Email and OTP are required.' });
+    }
+
+    const storedOtpData = otpStore[email];
+
+    if (!storedOtpData) {
+        return res.status(400).json({ message: 'Invalid or expired OTP.' });
+    }
+
+    if (Date.now() > storedOtpData.expiresAt) {
+        return res.status(400).json({ message: 'OTP has expired.' });
+    }
+
+    if (storedOtpData.otp !== otp) {
+        return res.status(400).json({ message: 'Invalid OTP.' });
+    }
+
+    // OTP is valid, clear it from memory
+    delete otpStore[email];
+
+    res.status(200).json({ message: 'OTP validated successfully.' });
 });
 
 module.exports = router;

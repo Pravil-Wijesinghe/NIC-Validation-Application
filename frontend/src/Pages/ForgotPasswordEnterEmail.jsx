@@ -33,6 +33,7 @@ function ForgotPasswordEnterEmail() {
       .then(response => {
         if (response && response.data) {
           alert(response.data.message);
+          localStorage.setItem('email', email); // Store the email in localStorage
           navigate('/ForgotPasswordEnterOTP');
         }
       })
