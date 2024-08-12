@@ -51,6 +51,8 @@ function Login() {
             .catch(error => {
                 if (error.response && error.response.data) {
                     alert(error.response.data.message);
+                } else if (error.message) {
+                    alert(`Request failed: ${error.message}`);
                 } else {
                     alert('An unexpected error occurred.');
                 }

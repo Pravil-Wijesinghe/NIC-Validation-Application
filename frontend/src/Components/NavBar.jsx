@@ -2,14 +2,23 @@ import React, { useRef, useState } from 'react';
 import Button from '@mui/material/Button';
 import CloseIcon from '@mui/icons-material/Close';
 import DensityMediumIcon from '@mui/icons-material/DensityMedium';
+import { useNavigate } from 'react-router-dom';
 
 function NavBar() {
   const navRef = useRef();
   const [isNavVisible, setIsNavVisible] = useState(false);
+  const navigate = useNavigate();
 
   const showNavbar = () => {
     navRef.current.classList.toggle('transform-none');
     setIsNavVisible(!isNavVisible);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('authToken');
+
+    // Redirect to login page
+    navigate('/login');
   };
 
   return (
@@ -40,7 +49,7 @@ function NavBar() {
           >
             Reports
           </a>
-          <Button size='small' variant='outlined' color='error'>
+          <Button size='small' variant='outlined' color='error' onClick={handleLogout}>
             Logout
           </Button>
           {isNavVisible && (

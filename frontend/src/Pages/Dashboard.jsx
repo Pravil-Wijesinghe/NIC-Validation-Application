@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import dayjs from 'dayjs';
 import NavBar from '../Components/NavBar';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 import ManIcon from '@mui/icons-material/Man';
@@ -25,39 +27,93 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { PieChart } from '@mui/x-charts/PieChart';
 
-function createData(nic, dob, age, gender, file) {
-    return { nic, dob, age, gender, file };
-  }
-  
-  const rows = [
-    createData('200200201883', '02/01/2002', 22, 'Male', 'File 1'),
-    createData('200200201883', '02/01/2002', 22, 'Male', 'File 2'),
-    createData('200200201883', '02/01/2002', 22, 'Male', 'File 3'),
-    createData('200200201883', '02/01/2002', 22, 'Male', 'File 4'),
-    createData('200200201883', '02/01/2002', 22, 'Male', 'File 2'),
-    createData('200200201883', '02/01/2002', 22, 'Male', 'File 4'),
-    createData('200200201883', '02/01/2002', 22, 'Male', 'File 3'),
-    createData('200200201883', '02/01/2002', 22, 'Male', 'File 1'),
-  ];
-
 function Dashboard() {
 
-    const [age, setAge] = React.useState('');
+    const [summary, setSummary] = useState({
+        totalRecords: 0,
+        maleCount: 0,
+        femaleCount: 0,
+    });
 
-    const handleChangeAge = (event) => {
-        setAge(event.target.value);
+    const [rows, setRows] = useState([]);
+    const [birthday, setBirthday] = useState(null);
+    const [age, setAge] = useState('');
+    const [gender, setGender] = useState('');
+    const [file, setFile] = useState('');
+    const [fileOptions, setFileOptions] = useState([]);
+    const [filePieData, setFilePieData] = useState([]);
+
+    useEffect(() => {
+        fetchSummary();
+        fetchNICData();
+        fetchFileNames();
+    }, []);
+
+    const fetchSummary = () => {
+        axios.get('http://localhost:3002/nic/summary')
+            .then(response => {
+                setSummary(response.data);
+            })
+            .catch(error => {
+                console.error('Error fetching summary data:', error);
+            });
     };
 
-    const [gender, setGender] = React.useState('');
-
-    const handleChangeGender = (event) => {
-        setGender(event.target.value);
+    const fetchNICData = (filters = {}) => {
+        axios.get('http://localhost:3002/nic/data', { params: filters })
+            .then(response => {
+                const formattedData = response.data.map(row => ({
+                    ...row,
+                    birthday: dayjs(row.birthday).format('YYYY-MM-DD'), // Format the birthday
+                }));
+                setRows(formattedData);
+            })
+            .catch(error => {
+                console.error('Error fetching NIC data:', error);
+            });
     };
 
-    const [file, setFile] = React.useState('');
+    const fetchFileNames = () => {
+        axios.get('http://localhost:3002/nic/files')
+            .then(response => {
+                setFileOptions(response.data); // Set file options from the backend response
+            })
+            .catch(error => {
+                console.error('Error fetching file names:', error);
+            });
+    };
 
-    const handleChangeFile = (event) => {
-        setFile(event.target.value);
+    const calculateFilePieData = (data) => {
+        const fileCounts = data.reduce((acc, row) => {
+            acc[row.file_name] = (acc[row.file_name] || 0) + 1;
+            return acc;
+        }, {});
+
+        const pieData = Object.entries(fileCounts).map(([fileName, count], index) => ({
+            id: index,
+            value: count,
+            label: fileName,
+        }));
+
+        setFilePieData(pieData);
+    };  
+
+    const handleFilter = () => {
+        const filters = {
+            birthday: birthday ? birthday.format('YYYY-MM-DD') : null,
+            age,
+            gender,
+            file
+        };
+        fetchNICData(filters);
+    };
+
+    const handleClear = () => {
+        setBirthday(null);
+        setAge('');
+        setGender('');
+        setFile('');
+        fetchNICData();
     };
 
   return (
@@ -72,17 +128,17 @@ function Dashboard() {
                 <div className='w-fit h-fit bg-bg-color p-4 lg:text-2xl md:text-xl font-bold rounded-lg flex gap-2 items-center cursor-pointer'>
                     <TextSnippetIcon className='lg:text-4xl md:text-3xl text-2xl'/>
                     <h1>Total Records -</h1>
-                    <h1>100</h1>
+                    <h1>{summary.totalRecords}</h1>
                 </div>
                 <div className='w-fit h-fit bg-bg-color p-4 lg:text-2xl md:text-xl font-bold rounded-lg flex gap-2 items-center cursor-pointer'>
                     <ManIcon className='lg:text-4xl md:text-3xl text-2xl'/>
                     <h1>Male -</h1>
-                    <h1>50</h1>
+                    <h1>{summary.maleCount}</h1>
                 </div>
                 <div className='w-fit h-fit bg-bg-color p-4 lg:text-2xl md:text-xl font-bold rounded-lg flex gap-2 items-center cursor-pointer'>
                     <WomanIcon className='lg:text-4xl md:text-3xl text-2xl'/>
                     <h1>Female -</h1>
-                    <h1>50</h1>
+                    <h1>{summary.femaleCount}</h1>
                 </div>
             </div>
             <div className='mt-10 w-full flex flex-col justify-center gap-4'>
@@ -90,7 +146,7 @@ function Dashboard() {
                     <Box className='w-52'>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DemoContainer components={['DatePicker']}>
-                                <DatePicker label="Enter Birthday" slotProps={{ textField: { size: 'small' } }}/>
+                                <DatePicker label="Enter Birthday" value={birthday} onChange={(newValue) => setBirthday(newValue)} slotProps={{ textField: { size: 'small' } }}/>
                             </DemoContainer>
                         </LocalizationProvider>
                     </Box>
@@ -103,11 +159,23 @@ function Dashboard() {
                                 id="demo-simple-select"
                                 value={age}
                                 label="Age"
-                                onChange={handleChangeAge}
+                                onChange={(e) => setAge(e.target.value)}
                                 >
-                                <MenuItem value={10}>16</MenuItem>
-                                <MenuItem value={20}>17</MenuItem>
-                                <MenuItem value={30}>18</MenuItem>
+                                <MenuItem value={16}>16</MenuItem>
+                                <MenuItem value={17}>17</MenuItem>
+                                <MenuItem value={18}>18</MenuItem>
+                                <MenuItem value={19}>19</MenuItem>
+                                <MenuItem value={20}>20</MenuItem>
+                                <MenuItem value={21}>21</MenuItem>
+                                <MenuItem value={22}>22</MenuItem>
+                                <MenuItem value={23}>23</MenuItem>
+                                <MenuItem value={24}>24</MenuItem>
+                                <MenuItem value={25}>25</MenuItem>
+                                <MenuItem value={26}>26</MenuItem>
+                                <MenuItem value={27}>27</MenuItem>
+                                <MenuItem value={28}>28</MenuItem>
+                                <MenuItem value={29}>29</MenuItem>
+                                <MenuItem value={30}>30</MenuItem>
                             </Select>
                         </FormControl>
                     </Box>
@@ -120,7 +188,7 @@ function Dashboard() {
                                 id="demo-simple-select"
                                 value={gender}
                                 label="gender"
-                                onChange={handleChangeGender}
+                                onChange={(e) => setGender(e.target.value)}
                                 >
                                 <MenuItem value={10}>Male</MenuItem>
                                 <MenuItem value={20}>Female</MenuItem>
@@ -136,20 +204,19 @@ function Dashboard() {
                                 id="demo-simple-select"
                                 value={file}
                                 label="Select File"
-                                onChange={handleChangeFile}
+                                onChange={(e) => setFile(e.target.value)}
                                 >
-                                <MenuItem value={10}>File 1</MenuItem>
-                                <MenuItem value={20}>File 2</MenuItem>
-                                <MenuItem value={30}>File 3</MenuItem>
-                                <MenuItem value={30}>File 3</MenuItem>
+                                {fileOptions.map((fileName, index) => (
+                                    <MenuItem key={index} value={fileName}>{fileName}</MenuItem>
+                                ))}
                             </Select>
                         </FormControl>
                     </Box>
-                    <Button className='flex gap-1 items-center' variant="contained" sx={{ minWidth: 120 }}>
+                    <Button className='flex gap-1 items-center' variant="contained" sx={{ minWidth: 120 }} onClick={handleFilter}>
                         <FilterAltIcon fontSize='small'/>
                         Filter
                     </Button>
-                    <Button className='flex gap-1 items-center' variant='outlined' color='error' sx={{ minWidth: 120 }}>
+                    <Button className='flex gap-1 items-center' variant='outlined' color='error' sx={{ minWidth: 120 }} onClick={handleClear}>
                         <ClearIcon fontSize='small'/>
                         Clear
                     </Button>
@@ -166,18 +233,18 @@ function Dashboard() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                        {rows.map((row) => (
+                        {rows.map((row, index) => (
                             <TableRow
-                                key={row.name}
+                                key={index}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                 >
                                 <TableCell align="center" component="th" scope="row">
-                                    {row.nic}
+                                {row.nic_number}
                                 </TableCell>
-                                <TableCell align="center">{row.dob}</TableCell>
+                                <TableCell align="center">{row.birthday}</TableCell>
                                 <TableCell align="center">{row.age}</TableCell>
                                 <TableCell align="center">{row.gender}</TableCell>
-                                <TableCell align="center">{row.file}</TableCell>
+                                <TableCell align="center">{row.file_name}</TableCell>
                             </TableRow>
                         ))}
                         </TableBody>
@@ -188,19 +255,14 @@ function Dashboard() {
                 <div>
                     <BarChart className='lg:w-[500px] lg:h-[400px] md:w-[400px] md:h-[300px] w-[300px] h-[200px]'
                         xAxis={[{ scaleType: 'band', data: ['Male', 'Female'] }]}
-                        series={[{ data: [4,2] }]}
+                        series={[{ data: [summary.maleCount, summary.femaleCount] }]}
                     />
                 </div>
                 <div>
                     <PieChart className='lg:w-[800px] lg:h-[400px] md:w-[450px] md:h-[300px] w-[230px] h-[200px]'
                         series={[
                             {
-                            data: [
-                                { id: 0, value: 10, label: 'File 1', },
-                                { id: 1, value: 15, label: 'File 2', },
-                                { id: 2, value: 20, label: 'File 3', },
-                                { id: 3, value: 25, label: 'File 4', },
-                            ],
+                                data: filePieData, // Use the calculated Pie Chart data
                             },
                         ]}
                     />

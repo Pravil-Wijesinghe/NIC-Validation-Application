@@ -93,6 +93,88 @@ router.post('/upload', (req, res) => {
   });
 });
 
+// File: routes/nic.js
+router.get('/data', (req, res) => {
+    const query = 'SELECT * FROM nic';
+    connection.query(query, (err, results) => {
+      if (err) {
+        console.error('Database error:', err);
+        return res.status(500).json({ message: 'Failed to retrieve data.' });
+      }
+      res.status(200).json(results);
+    });
+  });
+
+  // Summary data route
+router.get('/summary', (req, res) => {
+  const query = `
+      SELECT 
+          COUNT(*) AS totalRecords,
+          SUM(CASE WHEN gender = 'Male' THEN 1 ELSE 0 END) AS maleCount,
+          SUM(CASE WHEN gender = 'Female' THEN 1 ELSE 0 END) AS femaleCount
+      FROM nic`;
+
+  connection.query(query, (err, results) => {
+      if (err) {
+          console.error('Database error:', err);
+          return res.status(500).json({ message: 'Failed to retrieve summary data.' });
+      }
+
+      res.status(200).json(results[0]);
+  });
+});
+
+// Route to fetch all NIC data with optional filters
+router.get('/data', (req, res) => {
+  const { birthday, age, gender, file } = req.query;
+  let query = 'SELECT * FROM nic WHERE 1=1';
+  const queryParams = [];
+
+  if (birthday) {
+      query += ' AND birthday = ?';
+      queryParams.push(birthday);
+  }
+
+  if (age) {
+      query += ' AND age = ?';
+      queryParams.push(age);
+  }
+
+  if (gender) {
+      query += ' AND gender = ?';
+      queryParams.push(gender);
+  }
+
+  if (file) {
+      query += ' AND file_name = ?';
+      queryParams.push(file);
+  }
+
+  connection.query(query, queryParams, (err, results) => {
+      if (err) {
+          console.error('Database error:', err);
+          return res.status(500).json({ message: 'Failed to retrieve NIC data.' });
+      }
+
+      res.status(200).json(results);
+  });
+});
+
+router.get('/files', (req, res) => {
+  const query = 'SELECT DISTINCT file_name FROM nic';
+  connection.query(query, (err, results) => {
+      if (err) {
+          console.error('Database error:', err);
+          return res.status(500).json({ message: 'Failed to retrieve file names.' });
+      }
+
+      res.status(200).json(results.map(row => row.file_name));
+  });
+});
+
+module.exports = router;
+
+
 // Function to validate and parse the NIC
 function validateAndParseNIC(nic) {
   let year, days, gender;
