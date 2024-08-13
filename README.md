@@ -1,3 +1,7 @@
+#Login credentials
+username - pravil
+password - PRAVIL1234
+
 #Create NIC Validaton Application
 
 npx create-react-app *
