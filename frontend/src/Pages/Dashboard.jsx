@@ -27,6 +27,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { TextField } from '@mui/material';
+import { TablePagination } from '@mui/material';
 
 function Dashboard() {
 
@@ -43,6 +44,8 @@ function Dashboard() {
     const [file, setFile] = useState('');
     const [fileOptions, setFileOptions] = useState([]);
     const [filePieData, setFilePieData] = useState([]);
+    const [pg, setpg] = useState(0); 
+    const [rpg, setrpg] = useState(5); 
 
     useEffect(() => {
         fetchSummary();
@@ -120,15 +123,24 @@ function Dashboard() {
 
     const inputProps = {
         min: 0,
-        max: 100,
+        max: 120,
         step: 1,
     };
+
+    function handleChangePage(event, newpage) { 
+        setpg(newpage); 
+    }; 
+  
+    function handleChangeRowsPerPage(event) { 
+        setrpg(parseInt(event.target.value, 10)); 
+        setpg(0); 
+    }; 
 
   return (
     <div className='font-montserrat'>
       <NavBar />
       <div className='relative flex items-center justify-center w-full h-screen bg-bg-color'>
-        <div className='absolute flex flex-col top-20 h-[85%] w-[95%] bg-primary rounded-xl text-black py-6 px-10 overflow-hidden overflow-y-scroll'>
+        <div className='absolute flex flex-col top-20 h-[85%] w-[95%] bg-primary rounded-xl text-black py-6 md:px-10 px-6 overflow-hidden overflow-y-scroll'>
             <div className='flex w-full justify-center'>
                 <h1 className='font-bold lg:text-3xl text-2xl'>Dashboard</h1>
             </div>
@@ -224,7 +236,7 @@ function Dashboard() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                        {rows.map((row, index) => (
+                        {rows.slice(pg * rpg, pg * rpg + rpg).map((row, index) => (
                             <TableRow
                                 key={index}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -241,6 +253,16 @@ function Dashboard() {
                         </TableBody>
                     </Table>
                 </TableContainer>
+                <TablePagination
+                    className='w-full'
+                    rowsPerPageOptions={[5, 10, 25]} 
+                    component="div"
+                    count={rows.length} 
+                    rowsPerPage={rpg} 
+                    page={pg} 
+                    onPageChange={handleChangePage} 
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
             </div>
             <div className='flex xl:flex-row flex-col md:gap-6 mt-10 w-full lg:justify-start md:items-center items-center'>
                 <div>
