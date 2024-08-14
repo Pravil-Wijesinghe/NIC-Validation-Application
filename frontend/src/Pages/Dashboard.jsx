@@ -26,6 +26,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { PieChart } from '@mui/x-charts/PieChart';
+import { TextField } from '@mui/material';
 
 function Dashboard() {
 
@@ -116,6 +117,12 @@ function Dashboard() {
         fetchNICData();
     };
 
+    const inputProps = {
+        min: 0,
+        max: 100,
+        step: 1,
+    };
+
   return (
     <div className='font-montserrat'>
       <NavBar />
@@ -152,31 +159,14 @@ function Dashboard() {
                     </Box>
                     <Box className='w-52'>
                         <FormControl fullWidth>
-                            <InputLabel size='small' id="demo-simple-select-label">Age</InputLabel>
-                            <Select
+                            <TextField 
+                                type='number'
                                 size='small'
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
+                                label='Age'
                                 value={age}
-                                label="Age"
                                 onChange={(e) => setAge(e.target.value)}
-                                >
-                                <MenuItem value={16}>16</MenuItem>
-                                <MenuItem value={17}>17</MenuItem>
-                                <MenuItem value={18}>18</MenuItem>
-                                <MenuItem value={19}>19</MenuItem>
-                                <MenuItem value={20}>20</MenuItem>
-                                <MenuItem value={21}>21</MenuItem>
-                                <MenuItem value={22}>22</MenuItem>
-                                <MenuItem value={23}>23</MenuItem>
-                                <MenuItem value={24}>24</MenuItem>
-                                <MenuItem value={25}>25</MenuItem>
-                                <MenuItem value={26}>26</MenuItem>
-                                <MenuItem value={27}>27</MenuItem>
-                                <MenuItem value={28}>28</MenuItem>
-                                <MenuItem value={29}>29</MenuItem>
-                                <MenuItem value={30}>30</MenuItem>
-                            </Select>
+                                inputProps={inputProps}
+                            />
                         </FormControl>
                     </Box>
                     <Box className='w-52'>
@@ -229,7 +219,7 @@ function Dashboard() {
                                 <TableCell align="center">Date of Birth</TableCell>
                                 <TableCell align="center">Age</TableCell>
                                 <TableCell align="center">Gender</TableCell>
-                                <TableCell align="center">File</TableCell>
+                                <TableCell align="center">File Name</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>

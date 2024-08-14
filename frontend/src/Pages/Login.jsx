@@ -28,9 +28,9 @@ function Login() {
         event.preventDefault();
     };
 
-    // File: Login.jsx
     function handleSubmit(event) {
         event.preventDefault();
+        // navigate('/ImportFiles');
 
         if (!username) {
             alert('Username is required.');
