@@ -211,7 +211,7 @@ function calculateBirthday(year, days) {
   }
 
   const day = days;
-  const birthDate = new Date(year, month, day);
+  const birthDate = new Date(year, month, day+1);
   return birthDate.toISOString().split('T')[0];
 }
 

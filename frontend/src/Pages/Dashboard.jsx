@@ -68,6 +68,7 @@ function Dashboard() {
                     birthday: dayjs(row.birthday).format('YYYY-MM-DD'), // Format the birthday
                 }));
                 setRows(formattedData);
+                calculateFilePieData(formattedData); // Call the function here to calculate Pie Chart data
             })
             .catch(error => {
                 console.error('Error fetching NIC data:', error);
