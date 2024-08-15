@@ -23,6 +23,7 @@ function generateOTP() {
 
 // Route to handle email submission
 router.post('/', (req, res) => {
+    console.log(req.body);
     const { email } = req.body;
 
     if (!email) {

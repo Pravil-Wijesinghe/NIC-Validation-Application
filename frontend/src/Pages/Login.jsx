@@ -42,7 +42,7 @@ function Login() {
             return;
         }
 
-        axios.post('http://localhost:3000/login', { username, password })
+        axios.post('http://localhost:3000/login/login', { username, password })
             .then(response => {
                 if (response && response.data && response.data.redirectTo) {
                     navigate(response.data.redirectTo);

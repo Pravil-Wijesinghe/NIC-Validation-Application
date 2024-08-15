@@ -63,15 +63,38 @@ function Dashboard() {
             });
     };
 
+    // const fetchNICData = (filters = {}) => {
+    //     axios.get('http://localhost:3002/nic/data', { params: filters })
+    //         .then(response => {
+    //             const formattedData = response.data.map(row => ({
+    //                 ...row,
+    //                 birthday: dayjs(row.birthday).format('YYYY-MM-DD'), // Format the birthday
+    //             }));
+    //             setRows(formattedData);
+    //             calculateFilePieData(formattedData); // Call the function here to calculate Pie Chart data
+    //         })
+    //         .catch(error => {
+    //             console.error('Error fetching NIC data:', error);
+    //         });
+    // };
+
     const fetchNICData = (filters = {}) => {
-        axios.get('http://localhost:3002/nic/data', { params: filters })
+        // Make sure we only send non-empty filters
+        const validFilters = {};
+        if (filters.birthday) validFilters.birthday = filters.birthday;
+        if (filters.age) validFilters.age = filters.age;
+        if (filters.gender) validFilters.gender = filters.gender;
+        if (filters.file) validFilters.file = filters.file;
+
+        axios.get('http://localhost:3002/nic/data', { params: validFilters })
             .then(response => {
                 const formattedData = response.data.map(row => ({
                     ...row,
-                    birthday: dayjs(row.birthday).format('YYYY-MM-DD'), // Format the birthday
+                    birthday: dayjs(row.birthday).format('YYYY-MM-DD'),
                 }));
                 setRows(formattedData);
                 calculateFilePieData(formattedData); // Call the function here to calculate Pie Chart data
+
             })
             .catch(error => {
                 console.error('Error fetching NIC data:', error);
@@ -103,15 +126,41 @@ function Dashboard() {
         setFilePieData(pieData);
     };  
 
-    const handleFilter = () => {
-        const filters = {
-            birthday: birthday ? birthday.format('YYYY-MM-DD') : null,
-            age: birthday ? null : age,  // Disable age filter if birthday is selected
-            gender,
-            file
-        };
-        fetchNICData(filters);
+    // const handleFilter = () => {
+    //     const filters = {
+    //         birthday: birthday ? birthday.format('YYYY-MM-DD') : null,
+    //         age: birthday ? null : age,  // Disable age filter if birthday is selected
+    //         gender,
+    //         file
+    //     };
+    //     fetchNICData(filters);
+    // };
+
+    const handleFilter = async () => {
+        try {
+            const filters = {
+                birthday: birthday ? birthday.format('YYYY-MM-DD') : null,
+                age: birthday ? null : age, // If birthday is selected, ignore age
+                gender: gender || null, // Send gender only if selected
+                file: file || null // Send file only if selected
+            };
+    
+            // Remove any filters that are null or empty
+            const validFilters = Object.fromEntries(Object.entries(filters).filter(([_, value]) => value));
+    
+            const response = await axios.get('http://localhost:3002/nic/data', { params: validFilters });
+    
+            // Format and update the rows
+            setRows(response.data.map(row => ({
+                ...row,
+                birthday: dayjs(row.birthday).format('YYYY-MM-DD')
+            })));
+    
+        } catch (error) {
+            console.error('Error fetching filtered NIC data:', error); // Log error if filtering fails
+        }
     };
+    
 
     const handleClear = () => {
         setBirthday(null);
@@ -241,11 +290,11 @@ function Dashboard() {
                     <Table sx={{ minWidth: 650, borderRadius: 20 }} aria-label="simple table">
                         <TableHead>
                             <TableRow>
-                                <TableCell align='center'>NIC Number</TableCell>
-                                <TableCell align="center">Date of Birth</TableCell>
-                                <TableCell align="center">Age</TableCell>
-                                <TableCell align="center">Gender</TableCell>
-                                <TableCell align="center">File Name</TableCell>
+                                <TableCell className='font-bold' align='center'>NIC Number</TableCell>
+                                <TableCell className='font-bold' align="center">Date of Birth</TableCell>
+                                <TableCell className='font-bold' align="center">Age</TableCell>
+                                <TableCell className='font-bold' align="center">Gender</TableCell>
+                                <TableCell className='font-bold' align="center">File Name</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>

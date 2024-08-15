@@ -4,7 +4,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors'); // Import the cors middleware
 
-const loginRoute = require('./routes/login'); // Import the login route
+const loginRoute = require('./routes/login.js'); // Import the login route
 const forgotPasswordRoute = require('./routes/forgotPassword'); // Import the forgot password route
 const resetPasswordRoute = require('./routes/resetPassword'); // Import the reset password route
 
