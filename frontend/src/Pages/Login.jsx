@@ -9,12 +9,19 @@ import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 import axios from 'axios';
 
 function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [open, setOpen] = useState(false); // State to control dialog visibility
+    const [error, setError] = useState('');
 
     const navigate = useNavigate();
 
@@ -28,23 +35,55 @@ function Login() {
         event.preventDefault();
     };
 
+    // const handleSubmit = (event) => {
+    //     event.preventDefault();
+    
+    //     axios.post('http://localhost:3000/login/login', { username, password })
+    //       .then(response => {
+    //         // Assuming the backend returns a token upon successful login
+    //         const { token } = response.data;
+    
+    //         // Store the token in localStorage (or sessionStorage)
+    //         localStorage.setItem('authToken', token);
+    
+    //         // Redirect to the dashboard
+    //         navigate('/dashboard');
+    //       })
+    //       .catch(error => {
+    //         alert('Login failed.');
+    //       });
+    //   };
+
     const handleSubmit = (event) => {
         event.preventDefault();
     
+        // Clear any previous errors
+        setError('');
+    
         axios.post('http://localhost:3000/login/login', { username, password })
           .then(response => {
-            // Assuming the backend returns a token upon successful login
+            if (response && response.data) {
+              // Show success dialog on successful login
+              setOpen(true);
+              // Assuming the backend returns a token upon successful login
             const { token } = response.data;
-    
+
             // Store the token in localStorage (or sessionStorage)
             localStorage.setItem('authToken', token);
-    
-            // Redirect to the dashboard
-            navigate('/dashboard');
+            }
           })
           .catch(error => {
-            alert('Login failed.');
+            if (error.response && error.response.data) {
+              setError(error.response.data.message);
+            } else {
+              setError('An unexpected error occurred.');
+            }
           });
+      };
+
+      const handleClose = () => {
+        setOpen(false);
+        navigate('/ImportFiles'); // Navigate to the Import Files page on dialog close
       };
 
     return (
@@ -85,6 +124,23 @@ function Login() {
                     <Button type="submit" variant="contained" className='md:w-52 w-40'>Login</Button>
                     <Button onClick={handleClickForgotPassword} variant="text" className='md:w-52 w-40 text-black'>Forgot Password?</Button>
                 </form>
+                {error && <p className="text-red-500 mt-3">{error}</p>}
+            </div>
+            {/* Success Dialog */}
+            <div className='flex items-center justify-center'>
+                <Dialog open={open} onClose={handleClose}>
+                    <DialogTitle>Login Successful</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            You have successfully logged in. Click OK to continue to the Import Files page.
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                    <Button onClick={handleClose} autoFocus>
+                        OK
+                    </Button>
+                    </DialogActions>
+                </Dialog>
             </div>
         </div>
     );
