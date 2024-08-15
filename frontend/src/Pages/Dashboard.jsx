@@ -106,7 +106,7 @@ function Dashboard() {
     const handleFilter = () => {
         const filters = {
             birthday: birthday ? birthday.format('YYYY-MM-DD') : null,
-            age,
+            age: birthday ? null : age,  // Disable age filter if birthday is selected
             gender,
             file
         };
@@ -166,7 +166,16 @@ function Dashboard() {
                     <Box className='w-52'>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DemoContainer components={['DatePicker']}>
-                                <DatePicker label="Enter Birthday" value={birthday} onChange={(newValue) => setBirthday(newValue)} slotProps={{ textField: { size: 'small' } }}/>
+                                <DatePicker 
+                                    label="Enter Birthday" 
+                                    value={birthday} 
+                                    onChange={(newValue) => {
+                                        setBirthday(newValue);
+                                        setAge('');  // Clear age if birthday is selected
+                                    }} 
+                                    disabled={age !== ''}  // Disable if age is entered
+                                    slotProps={{ textField: { size: 'small' } }}
+                                />
                             </DemoContainer>
                         </LocalizationProvider>
                     </Box>
@@ -177,8 +186,12 @@ function Dashboard() {
                                 size='small'
                                 label='Age'
                                 value={age}
-                                onChange={(e) => setAge(e.target.value)}
+                                onChange={(e) => {
+                                    setAge(e.target.value);
+                                    setBirthday(null);  // Clear birthday if age is entered
+                                }}
                                 inputProps={inputProps}
+                                disabled={birthday !== null}  // Disable if birthday is selected
                             />
                         </FormControl>
                     </Box>
