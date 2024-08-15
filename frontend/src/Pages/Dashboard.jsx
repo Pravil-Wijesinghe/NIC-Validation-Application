@@ -51,7 +51,7 @@ function Dashboard() {
         fetchSummary();
         fetchNICData();
         fetchFileNames();
-    }, []);
+    });
 
     const fetchSummary = () => {
         axios.get('http://localhost:3002/nic/summary')
