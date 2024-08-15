@@ -1,4 +1,13 @@
 {
+  "name": "nic-validation-application",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "concurrently \"npm run start-nic\" \"npm run start-user\" \"npm run start-frontend\" \"npm run start-api-gateway\"",
+    "start-nic": "cd backend/NIC && npm start",
+    "start-user": "cd backend/User && npm start",
+    "start-frontend": "cd frontend && npm start",
+    "start-api-gateway": "cd backend/api-gateway && npm start"
+  },
   "devDependencies": {
     "concurrently": "^8.2.2"
   }
