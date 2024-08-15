@@ -28,36 +28,24 @@ function Login() {
         event.preventDefault();
     };
 
-    function handleSubmit(event) {
+    const handleSubmit = (event) => {
         event.preventDefault();
-        // navigate('/ImportFiles');
-
-        if (!username) {
-            alert('Username is required.');
-            return;
-        }
-
-        if (!password) {
-            alert('Password is required.');
-            return;
-        }
-
+    
         axios.post('http://localhost:3000/login/login', { username, password })
-            .then(response => {
-                if (response && response.data && response.data.redirectTo) {
-                    navigate(response.data.redirectTo);
-                }
-            })
-            .catch(error => {
-                if (error.response && error.response.data) {
-                    alert(error.response.data.message);
-                } else if (error.message) {
-                    alert(`Request failed: ${error.message}`);
-                } else {
-                    alert('An unexpected error occurred.');
-                }
-            });
-    }
+          .then(response => {
+            // Assuming the backend returns a token upon successful login
+            const { token } = response.data;
+    
+            // Store the token in localStorage (or sessionStorage)
+            localStorage.setItem('authToken', token);
+    
+            // Redirect to the dashboard
+            navigate('/dashboard');
+          })
+          .catch(error => {
+            alert('Login failed.');
+          });
+      };
 
     return (
         <div className='relative flex items-center justify-center w-full h-screen font-montserrat bg-bg-color'>

@@ -7,6 +7,7 @@ import ResetPassword from './Pages/ResetPassword';
 import ImportFiles from './Pages/ImportFiles';
 import Dashboard from './Pages/Dashboard';
 import Reports from './Pages/Reports';
+import ProtectedRoute from './Components/ProtectedRoute';
 
 function App() {
   return (
@@ -14,12 +15,12 @@ function App() {
       <Routes>
         <Route path='/' element={<Login/>}/>
         <Route path="/login" element={<Login />} />
-        <Route path="/ForgotPasswordEnterEmail" element={<ForgotPasswordEnterEmail />} />
-        <Route path="/ForgotPasswordEnterOTP" element={<ForgotPasswordEnterOTP/>}/>
-        <Route path="/ResetPassword" element={<ResetPassword />} />
-        <Route path="/ImportFiles" element={<ImportFiles />} />
-        <Route path="/Dashboard" element={<Dashboard />} />
-        <Route path="/Reports" element={<Reports />} />
+        <Route path="/ForgotPasswordEnterEmail" element={<ProtectedRoute><ForgotPasswordEnterEmail /></ProtectedRoute>} />
+        <Route path="/ForgotPasswordEnterOTP" element={<ProtectedRoute><ForgotPasswordEnterOTP/></ProtectedRoute>}/>
+        <Route path="/ResetPassword" element={<ProtectedRoute><ResetPassword /></ProtectedRoute>} />
+        <Route path="/ImportFiles" element={<ProtectedRoute><ImportFiles /></ProtectedRoute>} />
+        <Route path="/Dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/Reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
   );
