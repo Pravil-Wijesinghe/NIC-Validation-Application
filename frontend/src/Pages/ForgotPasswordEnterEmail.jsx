@@ -17,7 +17,38 @@ function ForgotPasswordEnterEmail() {
     return re.test(String(email).toLowerCase());
   };
 
-  const handleSubmit = (event) => {
+  // const handleSubmit = (event) => {
+  //   event.preventDefault();
+
+  //   //validate email
+  //   if (!validateEmail(email)) {
+  //     setError('Please enter a valid email address.');
+  //     return;
+  //   }
+  
+  //   // Clear any previous error messages
+  //   setError('');
+
+  //   axios.post('http://localhost:3000/forgot-password', { email })
+  //     .then(response => {
+  //       if (response && response.data) {
+  //         alert(response.data.message);
+  //         localStorage.setItem('email', email); // Store the email in localStorage
+  //         navigate('/ForgotPasswordEnterOTP');
+  //       }
+  //     })
+  //     .catch(error => {
+  //       if (error.response && error.response.data) {
+  //         alert(error.response.data.message);
+  //       } else if (error.message) {
+  //         alert(`Request failed: ${error.message}`);
+  //       } else {
+  //         alert('An unexpected error occurred.');
+  //       }
+  //     });
+  // };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     //validate email
@@ -25,27 +56,24 @@ function ForgotPasswordEnterEmail() {
       setError('Please enter a valid email address.');
       return;
     }
-  
+
     // Clear any previous error messages
     setError('');
 
-    axios.post('http://localhost:3000/forgot-password', { email })
-      .then(response => {
-        if (response && response.data) {
-          alert(response.data.message);
-          localStorage.setItem('email', email); // Store the email in localStorage
-          navigate('/ForgotPasswordEnterOTP');
-        }
-      })
-      .catch(error => {
-        if (error.response && error.response.data) {
-          alert(error.response.data.message);
-        } else if (error.message) {
-          alert(`Request failed: ${error.message}`);
-        } else {
-          alert('An unexpected error occurred.');
-        }
-      });
+    try {
+      const response = await axios.post('http://localhost:3000/forgot-password', { email });
+      if (response && response.data) {
+        alert(response.data.message);
+        localStorage.setItem('email', email); // Store the email in localStorage
+        navigate('/ForgotPasswordEnterOTP');
+      }
+    } catch (error) {
+      if (error.response && error.response.data) {
+        setError(error.response.data.message); // Display backend error messages
+      } else {
+        setError('An unexpected error occurred.');
+      }
+    }
   };
 
   return (

@@ -7,7 +7,6 @@ const connection = require('../DBConnect'); // Import the DB connection
 // Login route
 router.post('/login', (req, res) => {
     const { username, password } = req.body;
-    console.log(username,password);
 
     if (!username || !password) {
         return res.status(400).json({ message: "Username and password are required." });

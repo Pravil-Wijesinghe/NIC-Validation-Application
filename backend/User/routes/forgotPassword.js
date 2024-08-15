@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
+const connection = require('../DBConnect');
 
 // In-memory store for OTPs
 const otpStore = {};
@@ -22,36 +23,81 @@ function generateOTP() {
 }
 
 // Route to handle email submission
+// router.post('/', (req, res) => {
+//     console.log(req.body);
+//     const { email } = req.body;
+
+//     if (!email) {
+//         return res.status(400).json({ message: 'Email is required.' });
+//     }
+
+//     const otp = generateOTP(); // Generate the OTP
+
+//     // Store OTP in memory (valid for 5 minutes)
+//     otpStore[email] = {
+//         otp,
+//         expiresAt: Date.now() + 300000, // 5 minutes expiration
+//     };
+
+//     // Send the OTP to the user's email
+//     const mailOptions = {
+//         from: 'pravilwijesinghe@gmail.com',
+//         to: email,
+//         subject: 'Your OTP Code',
+//         text: `Your OTP code is ${otp}`,
+//     };
+
+//     transporter.sendMail(mailOptions, (error, info) => {
+//         if (error) {
+//             console.error('Error sending email:', error);
+//             return res.status(500).json({ message: 'Failed to send email.' });
+//         }
+//         res.status(200).json({ message: 'OTP sent successfully.'}); // You can return the OTP for debugging but avoid it in production
+//     });
+// });
+
 router.post('/', (req, res) => {
-    console.log(req.body);
     const { email } = req.body;
 
     if (!email) {
         return res.status(400).json({ message: 'Email is required.' });
     }
 
-    const otp = generateOTP(); // Generate the OTP
-
-    // Store OTP in memory (valid for 5 minutes)
-    otpStore[email] = {
-        otp,
-        expiresAt: Date.now() + 300000, // 5 minutes expiration
-    };
-
-    // Send the OTP to the user's email
-    const mailOptions = {
-        from: 'pravilwijesinghe@gmail.com',
-        to: email,
-        subject: 'Your OTP Code',
-        text: `Your OTP code is ${otp}`,
-    };
-
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            console.error('Error sending email:', error);
-            return res.status(500).json({ message: 'Failed to send email.' });
+    // Check if the email exists in the users table
+    const query = 'SELECT * FROM users WHERE email = ?';
+    connection.query(query, [email], (err, results) => {
+        if (err) {
+            return res.status(500).json({ message: 'Database query failed.' });
         }
-        res.status(200).json({ message: 'OTP sent successfully.'}); // You can return the OTP for debugging but avoid it in production
+
+        if (results.length === 0) {
+            return res.status(400).json({ message: 'Email is not matched.' });
+        }
+
+        // Generate and send OTP if email exists
+        const otp = generateOTP(); // Generate the OTP
+
+        // Store OTP in memory (valid for 5 minutes)
+        otpStore[email] = {
+            otp,
+            expiresAt: Date.now() + 300000, // 5 minutes expiration
+        };
+
+        // Send the OTP to the user's email
+        const mailOptions = {
+            from: 'your-email@gmail.com',
+            to: email,
+            subject: 'Your OTP Code',
+            text: `Your OTP code is ${otp}`,
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.error('Error sending email:', error);
+                return res.status(500).json({ message: 'Failed to send email.' });
+            }
+            res.status(200).json({ message: 'OTP sent successfully.'});
+        });
     });
 });
 
