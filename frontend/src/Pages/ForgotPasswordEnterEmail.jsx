@@ -3,11 +3,17 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 import axios from 'axios';
 
 function ForgotPasswordEnterEmail() {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
+  const [open, setOpen] = useState(false); // State to control dialog visibility
 
   const navigate = useNavigate();
 
@@ -32,9 +38,9 @@ function ForgotPasswordEnterEmail() {
     try {
       const response = await axios.post('http://localhost:3000/forgot-password', { email });
       if (response && response.data) {
-        alert(response.data.message);
+        // Display a dialog to inform the user that the email has been sent
+        setOpen(true);
         localStorage.setItem('email', email); // Store the email in localStorage
-        navigate('/ForgotPasswordEnterOTP');
       }
     } catch (error) {
       if (error.response && error.response.data) {
@@ -43,6 +49,11 @@ function ForgotPasswordEnterEmail() {
         setError('An unexpected error occurred.');
       }
     }
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    navigate('/ForgotPasswordEnterOTP'); // Navigate to the Enter OTP page on dialog close
   };
 
   return (
@@ -63,6 +74,21 @@ function ForgotPasswordEnterEmail() {
                 />
                 <Button type="submit" variant="contained" className='md:w-52 w-40'>Next</Button>
             </form>
+        </div>
+        <div>
+            <Dialog PaperProps={{ style: {display: 'flex', alignItems:'center', textAlign:'center',} }} open={open} onClose={handleClose}>
+                <DialogTitle>OTP Code Sent Successfully</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        OTP Code have successfully sent. Click OK to enter OTP code.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                <Button onClick={handleClose} autoFocus>
+                    OK
+                </Button>
+                </DialogActions>
+            </Dialog>
         </div>
     </div>
   );

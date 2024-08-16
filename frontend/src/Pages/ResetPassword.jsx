@@ -9,6 +9,11 @@ import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 import axios from 'axios';
 
 function ResetPassword() {
@@ -18,6 +23,10 @@ function ResetPassword() {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
+    const [open, setOpen] = useState(false); // State to control dialog visibility
+    const [errorDialogOpen, setErrorDialogOpen] = useState(false); // State to control error dialog visibility
+
+
     const navigate = useNavigate();
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -37,14 +46,26 @@ function ResetPassword() {
             });
 
             alert(response.data.message);
-            navigate('/login'); // Redirect to login page on success
+            setOpen(true);
+            setError(null);
         } catch (error) {
             if (error.response && error.response.data) {
                 setError(error.response.data.message);
             } else {
                 setError('An unexpected error occurred.');
             }
+            setErrorDialogOpen(true); // Open error dialog when an error occurs
+
         }
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+        navigate('/login'); // Navigate to the Login page on dialog close
+    };
+
+    const handleErrorDialogClose = () => {
+        setErrorDialogOpen(false); // Close the error dialog
     };
 
   return (
@@ -105,9 +126,38 @@ function ResetPassword() {
                         label="Re-eneter New Password"
                     />
                 </FormControl>
-                {error && <p className="text-red-500">{error}</p>}
                 <Button type='submit' variant="contained" className='md:w-52 w-40 mt-2'>Next</Button>
             </form>
+        </div>
+        <div>
+            {/* Success Dialog */}
+            <Dialog PaperProps={{ style: {display: 'flex', alignItems:'center', textAlign:'center',} }} open={open} onClose={handleClose}>
+                <DialogTitle>Password reset successfully</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                    Please log in with your new password.. Click OK to continue to the Login page.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                <Button onClick={handleClose} autoFocus>
+                    OK
+                </Button>
+                </DialogActions>
+            </Dialog>
+            {/* Error Dialog */}
+            <Dialog PaperProps={{ style: {display: 'flex', alignItems:'center', textAlign:'center', color:'#f44336'} }} open={errorDialogOpen} onClose={handleErrorDialogClose}>
+                    <DialogTitle>Error</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            {error}
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button color='error' className='text-error-color' onClick={handleErrorDialogClose} autoFocus>
+                            OK
+                        </Button>
+                    </DialogActions>
+                </Dialog>
         </div>
     </div>
   )

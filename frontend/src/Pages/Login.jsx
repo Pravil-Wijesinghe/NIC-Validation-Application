@@ -127,8 +127,8 @@ function Login() {
                 {error && <p className="text-red-500 mt-3">{error}</p>}
             </div>
             {/* Success Dialog */}
-            <div className='flex items-center justify-center'>
-                <Dialog open={open} onClose={handleClose}>
+            <div>
+                <Dialog PaperProps={{ style: {display: 'flex', alignItems:'center', textAlign:'center',} }} open={open} onClose={handleClose}>
                     <DialogTitle>Login Successful</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
