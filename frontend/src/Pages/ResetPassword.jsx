@@ -68,6 +68,7 @@ function ResetPassword() {
         setErrorDialogOpen(false); // Close the error dialog
     };
 
+
   return (
     <div className='relative flex items-center justify-center w-full h-screen font-montserrat bg-bg-color'>  
         <div className='absolute items-center justify-center flex flex-col h-fit w-fit bg-primary rounded-xl text-black py-12 px-10'>
@@ -153,7 +154,7 @@ function ResetPassword() {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button color='error' className='text-error-color' onClick={handleErrorDialogClose} autoFocus>
+                    <Button color='error' onClick={handleErrorDialogClose} autoFocus>
                         OK
                     </Button>
                 </DialogActions>
