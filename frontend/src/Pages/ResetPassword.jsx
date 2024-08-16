@@ -146,18 +146,18 @@ function ResetPassword() {
             </Dialog>
             {/* Error Dialog */}
             <Dialog PaperProps={{ style: {display: 'flex', alignItems:'center', textAlign:'center', color:'#f44336'} }} open={errorDialogOpen} onClose={handleErrorDialogClose}>
-                    <DialogTitle>Error</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText>
-                            {error}
-                        </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button color='error' className='text-error-color' onClick={handleErrorDialogClose} autoFocus>
-                            OK
-                        </Button>
-                    </DialogActions>
-                </Dialog>
+                <DialogTitle>Error</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        {error}
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button color='error' className='text-error-color' onClick={handleErrorDialogClose} autoFocus>
+                        OK
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </div>
     </div>
   )

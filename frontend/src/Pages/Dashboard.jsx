@@ -12,21 +12,21 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import Button from '@mui/material/Button';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import ClearIcon from '@mui/icons-material/Clear';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+// import Box from '@mui/material/Box';
+// import InputLabel from '@mui/material/InputLabel';
+// import MenuItem from '@mui/material/MenuItem';
+// import FormControl from '@mui/material/FormControl';
+// import Select from '@mui/material/Select';
+// import Button from '@mui/material/Button';
+// import FilterAltIcon from '@mui/icons-material/FilterAlt';
+// import ClearIcon from '@mui/icons-material/Clear';
+// import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+// import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+// import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { PieChart } from '@mui/x-charts/PieChart';
-import { TextField } from '@mui/material';
+// import { TextField } from '@mui/material';
 import { TablePagination } from '@mui/material';
 
 function Dashboard() {
@@ -38,11 +38,11 @@ function Dashboard() {
     });
 
     const [rows, setRows] = useState([]);
-    const [birthday, setBirthday] = useState(null);
-    const [age, setAge] = useState('');
-    const [gender, setGender] = useState('');
-    const [file, setFile] = useState('');
-    const [fileOptions, setFileOptions] = useState([]);
+    // const [birthday, setBirthday] = useState(null);
+    // const [age, setAge] = useState('');
+    // const [gender, setGender] = useState('');
+    // const [file, setFile] = useState('');
+    // const [fileOptions, setFileOptions] = useState([]);
     const [filePieData, setFilePieData] = useState([]);
     const [pg, setpg] = useState(0); 
     const [rpg, setrpg] = useState(5); 
@@ -50,7 +50,7 @@ function Dashboard() {
     useEffect(() => {
         fetchSummary();
         fetchNICData();
-        fetchFileNames();
+        // fetchFileNames();
     });
 
     const fetchSummary = () => {
@@ -63,53 +63,30 @@ function Dashboard() {
             });
     };
 
-    // const fetchNICData = (filters = {}) => {
-    //     axios.get('http://localhost:3002/nic/data', { params: filters })
-    //         .then(response => {
-    //             const formattedData = response.data.map(row => ({
-    //                 ...row,
-    //                 birthday: dayjs(row.birthday).format('YYYY-MM-DD'), // Format the birthday
-    //             }));
-    //             setRows(formattedData);
-    //             calculateFilePieData(formattedData); // Call the function here to calculate Pie Chart data
-    //         })
-    //         .catch(error => {
-    //             console.error('Error fetching NIC data:', error);
-    //         });
-    // };
-
     const fetchNICData = (filters = {}) => {
-        // Make sure we only send non-empty filters
-        const validFilters = {};
-        if (filters.birthday) validFilters.birthday = filters.birthday;
-        if (filters.age) validFilters.age = filters.age;
-        if (filters.gender) validFilters.gender = filters.gender;
-        if (filters.file) validFilters.file = filters.file;
-
-        axios.get('http://localhost:3002/nic/data', { params: validFilters })
+        axios.get('http://localhost:3002/nic/data', { params: filters })
             .then(response => {
                 const formattedData = response.data.map(row => ({
                     ...row,
-                    birthday: dayjs(row.birthday).format('YYYY-MM-DD'),
+                    birthday: dayjs(row.birthday).format('YYYY-MM-DD'), // Format the birthday
                 }));
                 setRows(formattedData);
                 calculateFilePieData(formattedData); // Call the function here to calculate Pie Chart data
-
             })
             .catch(error => {
                 console.error('Error fetching NIC data:', error);
             });
     };
 
-    const fetchFileNames = () => {
-        axios.get('http://localhost:3002/nic/files')
-            .then(response => {
-                setFileOptions(response.data); // Set file options from the backend response
-            })
-            .catch(error => {
-                console.error('Error fetching file names:', error);
-            });
-    };
+    // const fetchFileNames = () => {
+    //     axios.get('http://localhost:3002/nic/files')
+    //         .then(response => {
+    //             setFileOptions(response.data); // Set file options from the backend response
+    //         })
+    //         .catch(error => {
+    //             console.error('Error fetching file names:', error);
+    //         });
+    // };
 
     const calculateFilePieData = (data) => {
         const fileCounts = data.reduce((acc, row) => {
@@ -125,56 +102,6 @@ function Dashboard() {
 
         setFilePieData(pieData);
     };  
-
-    // const handleFilter = () => {
-    //     const filters = {
-    //         birthday: birthday ? birthday.format('YYYY-MM-DD') : null,
-    //         age: birthday ? null : age,  // Disable age filter if birthday is selected
-    //         gender,
-    //         file
-    //     };
-    //     fetchNICData(filters);
-    // };
-
-    const handleFilter = async () => {
-        try {
-            const filters = {
-                birthday: birthday ? birthday.format('YYYY-MM-DD') : null,
-                age: birthday ? null : age, // If birthday is selected, ignore age
-                gender: gender || null, // Send gender only if selected
-                file: file || null // Send file only if selected
-            };
-    
-            // Remove any filters that are null or empty
-            const validFilters = Object.fromEntries(Object.entries(filters).filter(([_, value]) => value));
-    
-            const response = await axios.get('http://localhost:3002/nic/data', { params: validFilters });
-    
-            // Format and update the rows
-            setRows(response.data.map(row => ({
-                ...row,
-                birthday: dayjs(row.birthday).format('YYYY-MM-DD')
-            })));
-    
-        } catch (error) {
-            console.error('Error fetching filtered NIC data:', error); // Log error if filtering fails
-        }
-    };
-    
-
-    const handleClear = () => {
-        setBirthday(null);
-        setAge('');
-        setGender('');
-        setFile('');
-        fetchNICData();
-    };
-
-    const inputProps = {
-        min: 0,
-        max: 120,
-        step: 1,
-    };
 
     function handleChangePage(event, newpage) { 
         setpg(newpage); 
@@ -211,7 +138,7 @@ function Dashboard() {
                 </div>
             </div>
             <div className='mt-10 w-full flex flex-col justify-center gap-4'>
-                <div className='flex md:flex-row flex-col gap-2 justify-center items-center lg:gap-3 md:gap-1'>
+                {/* <div className='flex md:flex-row flex-col gap-2 justify-center items-center lg:gap-3 md:gap-1'>
                     <Box className='w-52'>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DemoContainer components={['DatePicker']}>
@@ -285,7 +212,7 @@ function Dashboard() {
                         <ClearIcon fontSize='small'/>
                         Clear
                     </Button>
-                </div>
+                </div> */}
                 <TableContainer component={Paper}>
                     <Table sx={{ minWidth: 650, borderRadius: 20 }} aria-label="simple table">
                         <TableHead>

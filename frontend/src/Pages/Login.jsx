@@ -20,8 +20,9 @@ function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [open, setOpen] = useState(false); // State to control dialog visibility
     const [error, setError] = useState('');
+    const [errorDialogOpen, setErrorDialogOpen] = useState(false); // State to control error dialog visibility
+
 
     const navigate = useNavigate();
 
@@ -35,56 +36,34 @@ function Login() {
         event.preventDefault();
     };
 
-    // const handleSubmit = (event) => {
-    //     event.preventDefault();
-    
-    //     axios.post('http://localhost:3000/login/login', { username, password })
-    //       .then(response => {
-    //         // Assuming the backend returns a token upon successful login
-    //         const { token } = response.data;
-    
-    //         // Store the token in localStorage (or sessionStorage)
-    //         localStorage.setItem('authToken', token);
-    
-    //         // Redirect to the dashboard
-    //         navigate('/dashboard');
-    //       })
-    //       .catch(error => {
-    //         alert('Login failed.');
-    //       });
-    //   };
-
     const handleSubmit = (event) => {
         event.preventDefault();
     
-        // Clear any previous errors
-        setError('');
-    
         axios.post('http://localhost:3000/login/login', { username, password })
           .then(response => {
-            if (response && response.data) {
-              // Show success dialog on successful login
-              setOpen(true);
-              // Assuming the backend returns a token upon successful login
+            // Assuming the backend returns a token upon successful login
             const { token } = response.data;
-
+    
             // Store the token in localStorage (or sessionStorage)
             localStorage.setItem('authToken', token);
-            }
+    
+            // Redirect to the dashboard
+            navigate('/dashboard');
+
+            setError(null);
           })
           .catch(error => {
             if (error.response && error.response.data) {
-              setError(error.response.data.message);
-            } else {
-              setError('An unexpected error occurred.');
+                setError(error.response.data.message);
             }
+            // alert('Login failed.');
+            setErrorDialogOpen(true);
           });
       };
 
-      const handleClose = () => {
-        setOpen(false);
-        navigate('/ImportFiles'); // Navigate to the Import Files page on dialog close
-      };
+    const handleErrorDialogClose = () => {
+        setErrorDialogOpen(false); // Close the error dialog
+    };
 
     return (
         <div className='relative flex items-center justify-center w-full h-screen font-montserrat bg-bg-color'>
@@ -124,24 +103,21 @@ function Login() {
                     <Button type="submit" variant="contained" className='md:w-52 w-40'>Login</Button>
                     <Button onClick={handleClickForgotPassword} variant="text" className='md:w-52 w-40 text-black'>Forgot Password?</Button>
                 </form>
-                {error && <p className="text-red-500 mt-3">{error}</p>}
             </div>
-            {/* Success Dialog */}
-            <div>
-                <Dialog PaperProps={{ style: {display: 'flex', alignItems:'center', textAlign:'center',} }} open={open} onClose={handleClose}>
-                    <DialogTitle>Login Successful</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText>
-                            You have successfully logged in. Click OK to continue to the Import Files page.
-                        </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                    <Button onClick={handleClose} autoFocus>
+            {/* Error Dialog */}
+            <Dialog PaperProps={{ style: {display: 'flex', alignItems:'center', textAlign:'center', color:'#f44336'} }} open={errorDialogOpen} onClose={handleErrorDialogClose}>
+                <DialogTitle>Error</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        {error}
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button color='error' className='text-error-color' onClick={handleErrorDialogClose} autoFocus>
                         OK
                     </Button>
-                    </DialogActions>
-                </Dialog>
-            </div>
+                </DialogActions>
+            </Dialog>
         </div>
     );
 }
