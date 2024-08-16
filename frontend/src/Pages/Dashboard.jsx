@@ -17,7 +17,7 @@ import Paper from '@mui/material/Paper';
 // import MenuItem from '@mui/material/MenuItem';
 // import FormControl from '@mui/material/FormControl';
 // import Select from '@mui/material/Select';
-// import Button from '@mui/material/Button';
+import Button from '@mui/material/Button';
 // import FilterAltIcon from '@mui/icons-material/FilterAlt';
 // import ClearIcon from '@mui/icons-material/Clear';
 // import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
@@ -28,6 +28,11 @@ import { BarChart } from '@mui/x-charts/BarChart';
 import { PieChart } from '@mui/x-charts/PieChart';
 // import { TextField } from '@mui/material';
 import { TablePagination } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 function Dashboard() {
 
@@ -46,6 +51,8 @@ function Dashboard() {
     const [filePieData, setFilePieData] = useState([]);
     const [pg, setpg] = useState(0); 
     const [rpg, setrpg] = useState(5); 
+    const [errorDialogOpen, setErrorDialogOpen] = useState(false); // State to control error dialog visibility
+    const [error, setError] = useState(''); // State to store error message
 
     useEffect(() => {
         fetchSummary();
@@ -57,9 +64,12 @@ function Dashboard() {
         axios.get('http://localhost:3002/nic/summary')
             .then(response => {
                 setSummary(response.data);
+                setError(null);
             })
             .catch(error => {
                 console.error('Error fetching summary data:', error);
+                setErrorDialogOpen(true); // Open error dialog when an error occurs
+
             });
     };
 
@@ -72,9 +82,11 @@ function Dashboard() {
                 }));
                 setRows(formattedData);
                 calculateFilePieData(formattedData); // Call the function here to calculate Pie Chart data
+                setError(null);
             })
             .catch(error => {
                 console.error('Error fetching NIC data:', error);
+                setErrorDialogOpen(true); // Open error dialog when an error occurs
             });
     };
 
@@ -111,6 +123,10 @@ function Dashboard() {
         setrpg(parseInt(event.target.value, 10)); 
         setpg(0); 
     }; 
+
+    const handleErrorDialogClose = () => {
+        setErrorDialogOpen(false); // Close the error dialog
+    };
 
   return (
     <div className='font-montserrat'>
@@ -269,6 +285,22 @@ function Dashboard() {
                         ]}
                     />
                 </div>
+            </div>
+            <div>
+                {/* Error Dialog */}
+                <Dialog PaperProps={{ style: {display: 'flex', alignItems:'center', textAlign:'center', color:'#f44336'} }} open={errorDialogOpen} onClose={handleErrorDialogClose}>
+                    <DialogTitle>Error</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            {error}
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button color='error' className='text-error-color' onClick={handleErrorDialogClose} autoFocus>
+                            OK
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </div>
         </div>
     </div>
