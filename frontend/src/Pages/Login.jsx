@@ -23,7 +23,6 @@ function Login() {
     const [error, setError] = useState('');
     const [errorDialogOpen, setErrorDialogOpen] = useState(false); // State to control error dialog visibility
 
-
     const navigate = useNavigate();
 
     const handleClickForgotPassword = () => {

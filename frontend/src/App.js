@@ -9,12 +9,14 @@ import Dashboard from './Pages/Dashboard';
 import Reports from './Pages/Reports';
 import ProtectedRoute from './Components/ProtectedRoute';
 import Signup from './Pages/Signup';
+import LoginPage from './Pages/LoginPage';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<Login/>}/>
+        <Route path='/login' element={<LoginPage/>}/>
         <Route path="/login" element={<Login />} />
         <Route path="/ForgotPasswordEnterEmail" element={<ForgotPasswordEnterEmail />} />
         <Route path="/ForgotPasswordEnterOTP" element={<ForgotPasswordEnterOTP/>}/>
