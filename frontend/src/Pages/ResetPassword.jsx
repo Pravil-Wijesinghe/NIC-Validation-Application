@@ -55,7 +55,6 @@ function ResetPassword() {
                 setError('An unexpected error occurred.');
             }
             setErrorDialogOpen(true); // Open error dialog when an error occurs
-
         }
     };
 

@@ -30,6 +30,10 @@ function Login() {
         navigate('/ForgotPasswordEnterEmail');
     };
 
+    const handleClickLogin = () => {
+        navigate('/Signup');
+    };
+
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
     const handleMouseDownPassword = (event) => {
@@ -102,6 +106,12 @@ function Login() {
                     </FormControl>
                     <Button type="submit" variant="contained" className='md:w-52 w-40'>Login</Button>
                     <Button onClick={handleClickForgotPassword} variant="text" className='md:w-52 w-40 text-black'>Forgot Password?</Button>
+                    <div className='flex items-center justify-center'>
+                        <p>
+                            Don't have an account?{' '}
+                        </p>
+                        <Button onClick={handleClickLogin} variant="text" className='md:w-fit w-fit'>Sign Up</Button>
+                    </div>
                 </form>
             </div>
             {/* Error Dialog */}

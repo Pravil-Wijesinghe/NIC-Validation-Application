@@ -8,6 +8,7 @@ import ImportFiles from './Pages/ImportFiles';
 import Dashboard from './Pages/Dashboard';
 import Reports from './Pages/Reports';
 import ProtectedRoute from './Components/ProtectedRoute';
+import Signup from './Pages/Signup';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/ImportFiles" element={<ProtectedRoute><ImportFiles /></ProtectedRoute>} />
         <Route path="/Dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/Reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
+        <Route path="/Signup" element={<Signup/>}/>
       </Routes>
     </BrowserRouter>
   );

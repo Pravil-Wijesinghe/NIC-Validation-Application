@@ -153,6 +153,23 @@ function Dashboard() {
                     <h1>{summary.femaleCount}</h1>
                 </div>
             </div>
+            <div className='flex xl:flex-row flex-col md:gap-6 mt-10 w-full lg:justify-start md:items-center items-center'>
+                <div>
+                    <BarChart className='lg:w-[500px] lg:h-[400px] md:w-[400px] md:h-[300px] w-[300px] h-[200px]'
+                        xAxis={[{ scaleType: 'band', data: ['Male', 'Female'] }]}
+                        series={[{ data: [summary.maleCount, summary.femaleCount] }]}
+                    />
+                </div>
+                <div>
+                    <PieChart className='lg:w-[800px] lg:h-[400px] md:w-[450px] md:h-[300px] w-[230px] h-[200px]'
+                        series={[
+                            {
+                                data: filePieData, // Use the calculated Pie Chart data
+                            },
+                        ]}
+                    />
+                </div>
+            </div>
             <div className='mt-10 w-full flex flex-col justify-center gap-4'>
                 {/* <div className='flex md:flex-row flex-col gap-2 justify-center items-center lg:gap-3 md:gap-1'>
                     <Box className='w-52'>
@@ -268,23 +285,6 @@ function Dashboard() {
                     onPageChange={handleChangePage} 
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
-            </div>
-            <div className='flex xl:flex-row flex-col md:gap-6 mt-10 w-full lg:justify-start md:items-center items-center'>
-                <div>
-                    <BarChart className='lg:w-[500px] lg:h-[400px] md:w-[400px] md:h-[300px] w-[300px] h-[200px]'
-                        xAxis={[{ scaleType: 'band', data: ['Male', 'Female'] }]}
-                        series={[{ data: [summary.maleCount, summary.femaleCount] }]}
-                    />
-                </div>
-                <div>
-                    <PieChart className='lg:w-[800px] lg:h-[400px] md:w-[450px] md:h-[300px] w-[230px] h-[200px]'
-                        series={[
-                            {
-                                data: filePieData, // Use the calculated Pie Chart data
-                            },
-                        ]}
-                    />
-                </div>
             </div>
             <div>
                 {/* Error Dialog */}
