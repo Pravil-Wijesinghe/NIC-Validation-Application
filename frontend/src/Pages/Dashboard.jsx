@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import dayjs from 'dayjs';
+import dayjs from 'dayjs';  
 import NavBar from '../Components/NavBar';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 import ManIcon from '@mui/icons-material/Man';
@@ -12,27 +12,22 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-// import Box from '@mui/material/Box';
-// import InputLabel from '@mui/material/InputLabel';
-// import MenuItem from '@mui/material/MenuItem';
-// import FormControl from '@mui/material/FormControl';
-// import Select from '@mui/material/Select';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 import Button from '@mui/material/Button';
-// import FilterAltIcon from '@mui/icons-material/FilterAlt';
-// import ClearIcon from '@mui/icons-material/Clear';
-// import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-// import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-// import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import ClearIcon from '@mui/icons-material/Clear';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { PieChart } from '@mui/x-charts/PieChart';
-// import { TextField } from '@mui/material';
-import { TablePagination } from '@mui/material';
+import { TablePagination, TextField } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import { Box } from '@mui/system';
 
 function Dashboard() {
 
@@ -43,21 +38,24 @@ function Dashboard() {
     });
 
     const [rows, setRows] = useState([]);
-    // const [birthday, setBirthday] = useState(null);
-    // const [age, setAge] = useState('');
-    // const [gender, setGender] = useState('');
-    // const [file, setFile] = useState('');
-    // const [fileOptions, setFileOptions] = useState([]);
+    const [fileOptions, setFileOptions] = useState([]);
     const [filePieData, setFilePieData] = useState([]);
     const [pg, setpg] = useState(0); 
     const [rpg, setrpg] = useState(5); 
     const [errorDialogOpen, setErrorDialogOpen] = useState(false); // State to control error dialog visibility
     const [error, setError] = useState(''); // State to store error message
+    const [filterDialogOpen, setFilterDialogOpen] = useState(false); // State to control the filter dialog visibility
+    
+     // Add filter states
+     const [nicFilter, setNicFilter] = useState('');
+     const [genderFilter, setGenderFilter] = useState('');
+     const [fileFilter, setFileFilter] = useState('');
+ 
 
     useEffect(() => {
         fetchSummary();
         fetchNICData();
-        // fetchFileNames();
+        fetchFileNames();
     });
 
     const fetchSummary = () => {
@@ -67,7 +65,7 @@ function Dashboard() {
                 setError(null);
             })
             .catch(error => {
-                console.error('Error fetching summary data:', error);
+                setError('Error fetching summary data:', error);
                 setErrorDialogOpen(true); // Open error dialog when an error occurs
 
             });
@@ -85,20 +83,20 @@ function Dashboard() {
                 setError(null);
             })
             .catch(error => {
-                console.error('Error fetching NIC data:', error);
+                setError('Error fetching NIC data:', error);
                 setErrorDialogOpen(true); // Open error dialog when an error occurs
             });
     };
 
-    // const fetchFileNames = () => {
-    //     axios.get('http://localhost:3002/nic/files')
-    //         .then(response => {
-    //             setFileOptions(response.data); // Set file options from the backend response
-    //         })
-    //         .catch(error => {
-    //             console.error('Error fetching file names:', error);
-    //         });
-    // };
+    const fetchFileNames = () => {
+        axios.get('http://localhost:3002/nic/files')
+            .then(response => {
+                setFileOptions(response.data); // Set file options from the backend response
+            })
+            .catch(error => {
+                setError('Error fetching file names:', error);
+            });
+    };
 
     const calculateFilePieData = (data) => {
         const fileCounts = data.reduce((acc, row) => {
@@ -115,6 +113,25 @@ function Dashboard() {
         setFilePieData(pieData);
     };  
 
+    // Handle the filtering logic
+    const handleFilter = () => {
+        const filters = {
+            nic_number: nicFilter || undefined,
+            gender: genderFilter || undefined,
+            file_name: fileFilter || undefined,
+        };
+        fetchNICData(filters); // Fetch filtered data
+        setFilterDialogOpen(true); // Open the dialog when data is fetched
+    };
+
+    const handleClear = () => {
+        // Reset all filters and fetch all data again
+        setNicFilter('');
+        setGenderFilter('');
+        setFileFilter('');
+        fetchNICData();  // Fetch all data again
+    };
+
     function handleChangePage(event, newpage) { 
         setpg(newpage); 
     }; 
@@ -123,6 +140,10 @@ function Dashboard() {
         setrpg(parseInt(event.target.value, 10)); 
         setpg(0); 
     }; 
+
+    const handleCloseDialog = () => {
+        setFilterDialogOpen(false); // Close the filter dialog
+    };
 
     const handleErrorDialogClose = () => {
         setErrorDialogOpen(false); // Close the error dialog
@@ -171,36 +192,16 @@ function Dashboard() {
                 </div>
             </div>
             <div className='mt-10 w-full flex flex-col justify-center gap-4'>
-                {/* <div className='flex md:flex-row flex-col gap-2 justify-center items-center lg:gap-3 md:gap-1'>
-                    <Box className='w-52'>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DemoContainer components={['DatePicker']}>
-                                <DatePicker 
-                                    label="Enter Birthday" 
-                                    value={birthday} 
-                                    onChange={(newValue) => {
-                                        setBirthday(newValue);
-                                        setAge('');  // Clear age if birthday is selected
-                                    }} 
-                                    disabled={age !== ''}  // Disable if age is entered
-                                    slotProps={{ textField: { size: 'small' } }}
-                                />
-                            </DemoContainer>
-                        </LocalizationProvider>
-                    </Box>
+                <div className='flex md:flex-row flex-col gap-2 justify-center items-center lg:gap-3 md:gap-1'>
                     <Box className='w-52'>
                         <FormControl fullWidth>
-                            <TextField 
-                                type='number'
+                            <TextField
                                 size='small'
-                                label='Age'
-                                value={age}
-                                onChange={(e) => {
-                                    setAge(e.target.value);
-                                    setBirthday(null);  // Clear birthday if age is entered
-                                }}
-                                inputProps={inputProps}
-                                disabled={birthday !== null}  // Disable if birthday is selected
+                                label='NIC Number'
+                                variant='outlined'
+                                className='w-full'
+                                value={nicFilter}
+                                onChange={(e) => setNicFilter(e.target.value)}
                             />
                         </FormControl>
                     </Box>
@@ -208,15 +209,15 @@ function Dashboard() {
                         <FormControl fullWidth>
                             <InputLabel size='small' id="demo-simple-select-label">Gender</InputLabel>
                             <Select
-                                size='small'
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                value={gender}
-                                label="gender"
-                                onChange={(e) => setGender(e.target.value)}
+                                    size='small'
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    label="gender"
+                                    value={genderFilter}
+                                    onChange={(e) => setGenderFilter(e.target.value)}
                                 >
-                                <MenuItem value={10}>Male</MenuItem>
-                                <MenuItem value={20}>Female</MenuItem>
+                                <MenuItem value={'Male'}>Male</MenuItem>
+                                <MenuItem value={'Female'}>Female</MenuItem>
                             </Select>
                         </FormControl>
                     </Box>
@@ -227,9 +228,9 @@ function Dashboard() {
                                 size='small'
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
-                                value={file}
                                 label="Select File"
-                                onChange={(e) => setFile(e.target.value)}
+                                value={fileFilter}
+                                onChange={(e) => setFileFilter(e.target.value)}
                                 >
                                 {fileOptions.map((fileName, index) => (
                                     <MenuItem key={index} value={fileName}>{fileName}</MenuItem>
@@ -245,7 +246,7 @@ function Dashboard() {
                         <ClearIcon fontSize='small'/>
                         Clear
                     </Button>
-                </div> */}
+                </div>
                 <TableContainer component={Paper}>
                     <Table sx={{ minWidth: 650, borderRadius: 20 }} aria-label="simple table">
                         <TableHead>
@@ -286,6 +287,41 @@ function Dashboard() {
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
             </div>
+            {/* Dialog for showing filtered results */}
+            <Dialog PaperProps={{ style: { display: 'flex', alignItems: 'center', textAlign: 'center', } }} open={filterDialogOpen} onClose={handleCloseDialog} maxWidth="md" fullWidth>
+                <DialogTitle>Filtered Results</DialogTitle>
+                <DialogContent>
+                    <TableContainer component={Paper}>
+                        <Table sx={{ minWidth: 650, borderRadius: 20 }} aria-label="simple table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell className='font-bold' align='center'>NIC Number</TableCell>
+                                    <TableCell className='font-bold' align="center">Date of Birth</TableCell>
+                                    <TableCell className='font-bold' align="center">Age</TableCell>
+                                    <TableCell className='font-bold' align="center">Gender</TableCell>
+                                    <TableCell className='font-bold' align="center">File Name</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {rows.map((row, index) => (
+                                    <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                        <TableCell align="center">{row.nic_number}</TableCell>
+                                        <TableCell align="center">{row.birthday}</TableCell>
+                                        <TableCell align="center">{row.age}</TableCell>
+                                        <TableCell align="center">{row.gender}</TableCell>
+                                        <TableCell align="center">{row.file_name}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseDialog} autoFocus>
+                        OK
+                    </Button>
+                </DialogActions>
+            </Dialog>
             <div>
                 {/* Error Dialog */}
                 <Dialog PaperProps={{ style: {display: 'flex', alignItems:'center', textAlign:'center', color:'#f44336'} }} open={errorDialogOpen} onClose={handleErrorDialogClose}>
