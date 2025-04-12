@@ -30,7 +30,7 @@ function ForgotPasswordEnterOTP() {
     }
 
     try {
-      const response = await axios.post('http://localhost:3000/forgot-password/validate-otp', { email, otp });
+      const response = await axios.post(`${process.env.REACT_APP_USER_API_BASE_URL}/forgot-password/validate-otp`, { email, otp });
       console.log('Response from server:', response.data);
       setOpen(true);
     } catch (error) {

@@ -29,7 +29,7 @@ function Reports() {
   },[]);
 
   const fetchNICData = (filters = {}) => {
-    axios.get('http://localhost:3002/nic/data', { params: filters })
+    axios.get(`${process.env.REACT_APP_NIC_API_BASE_URL}/data`, { params: filters })
         .then(response => {
             const formattedData = response.data.map(row => ({
                 ...row,

@@ -36,7 +36,7 @@ function ForgotPasswordEnterEmail() {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:3000/forgot-password', { email });
+      const response = await axios.post(`${process.env.REACT_APP_USER_API_BASE_URL}/forgot-password`, { email });
       if (response && response.data) {
         // Display a dialog to inform the user that the email has been sent
         setOpen(true);

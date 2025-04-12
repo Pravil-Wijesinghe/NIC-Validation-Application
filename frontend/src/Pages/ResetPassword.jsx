@@ -39,7 +39,7 @@ function ResetPassword() {
         event.preventDefault();
 
         try {
-            const response = await axios.post('http://localhost:3000/reset-password', {
+            const response = await axios.post(`${process.env.REACT_APP_USER_API_BASE_URL}/reset-password`, {
                 username,
                 newPassword,
                 confirmPassword,

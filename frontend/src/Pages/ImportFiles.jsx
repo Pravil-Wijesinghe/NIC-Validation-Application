@@ -26,7 +26,7 @@ function ImportFiles() {
       formData.append(`file${index + 1}`, file);
     });
 
-    axios.post('http://localhost:3002/nic/upload', formData, {
+    axios.post(`${process.env.REACT_APP_NIC_API_BASE_URL}/upload`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },

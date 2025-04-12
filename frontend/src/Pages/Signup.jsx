@@ -58,7 +58,7 @@ function Signup() {
             return;
         }
 
-        axios.post('http://localhost:3000/signup', { firstName, lastName, username, email, password })
+        axios.post(`${process.env.REACT_APP_USER_API_BASE_URL}/signup`, { firstName, lastName, username, email, password })
             .then(response => {
                 setOpen(true);
                 setError(null);

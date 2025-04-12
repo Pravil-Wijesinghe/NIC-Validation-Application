@@ -57,13 +57,13 @@ function Dashboard() {
   }, []);
 
   const fetchSummary = () => {
-    axios.get('http://localhost:3002/nic/summary')
+    axios.get(`${process.env.REACT_APP_NIC_API_BASE_URL}/summary`)
       .then(response => setSummary(response.data))
       .catch(error => setError('Error fetching summary data:', error));
   };
 
   const fetchNICData = () => {
-    axios.get('http://localhost:3002/nic/data')
+    axios.get(`${process.env.REACT_APP_NIC_API_BASE_URL}/data`)
       .then(response => {
         const formattedData = response.data.map(row => ({
           ...row,
@@ -77,7 +77,7 @@ function Dashboard() {
   };
 
   const fetchFileNames = () => {
-    axios.get('http://localhost:3002/nic/files')
+    axios.get(`${process.env.REACT_APP_NIC_API_BASE_URL}/files`)
       .then(response => setFileOptions(response.data))
       .catch(error => setError('Error fetching file names:', error));
   };
