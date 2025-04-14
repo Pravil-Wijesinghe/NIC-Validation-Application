@@ -17,7 +17,7 @@ app.use('/forgot-password', forgotPasswordRoute); // Use the forgot password rou
 app.use('/reset-password', resetPasswordRoute); // Use the reset password route
 app.use('/signup', signupRoute); // Use the signup route
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
     console.log(`User service running on port ${PORT}`);
