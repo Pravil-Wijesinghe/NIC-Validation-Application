@@ -1,9 +1,10 @@
 const mysql = require('mysql2');
 
 const connection = mysql.createConnection({
-    host: 'localhost',
+    host: 'metro.proxy.rlwy.net',
+    port: 37617,
     user: 'root',
-    password: 'P@R#A$V%I&L2002',
+    password: 'GxvgeyiDjRbNGiMNEgdjiFGBYAAZUyQl',
     database: 'nic_validation'
 });
 
