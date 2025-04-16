@@ -1,7 +1,7 @@
 // File: User/routes/login.js
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const connection = require('../DBConnect'); // Import the DB connection
 
 // Login route
