@@ -4,7 +4,7 @@ const connection = mysql.createConnection({
     host: 'nic-nic-validation.g.aivencloud.com',
     port: 12236,
     user: 'avnadmin',
-    
+    password: 'AVNS__cDzUrZTekLb5ZuGuCo',
     database: 'nic_validation'
     // host: 'localhost',
     // user: 'root',
