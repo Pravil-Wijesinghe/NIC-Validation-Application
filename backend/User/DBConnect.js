@@ -1,11 +1,15 @@
 const mysql = require('mysql2');
 
 const connection = mysql.createConnection({
-    host: 'yamabiko.proxy.rlwy.net',
-    port: 40551,
-    user: 'root',
-    password: 'aBccEVSzMCkLUjaWxWaPRxebUVfCNLrD',
+    host: 'nic-nic-validation.g.aivencloud.com',
+    port: 12236,
+    user: 'avnadmin',
+    password: 'AVNS__cDzUrZTekLb5ZuGuCo',
     database: 'user'
+    // host: 'localhost',
+    // user: 'root',
+    // password: 'P@R#A$V%I&L2002',
+    // database: 'user'
 });
 
 connection.connect((err) => {
