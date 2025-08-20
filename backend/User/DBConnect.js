@@ -1,15 +1,11 @@
 const mysql = require('mysql2');
 
 const connection = mysql.createConnection({
-    host: 'nic-nic-validation.g.aivencloud.com',
-    port: 12236,
-    user: 'avnadmin',
-    password: 'AVNS__cDzUrZTekLb5ZuGuCo',
+    
+    host: 'localhost',
+    user: 'root',
+    password: '',
     database: 'user'
-    // host: 'localhost',
-    // user: 'root',
-    // password: 'P@R#A$V%I&L2002',
-    // database: 'user'
 });
 
 connection.connect((err) => {
